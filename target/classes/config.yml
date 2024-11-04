@@ -1,0 +1,6 @@
+blacklisted-blocks:
+  - BEDROCK
+  - CRAFTING_TABLE
+  - END_PORTAL_FRAME
+  - END_PORTAL
+  - NETHER_PORTAL

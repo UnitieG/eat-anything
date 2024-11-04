@@ -1,0 +1,11 @@
+name: EatStuff
+version: '1.0-SNAPSHOT'
+main: dev.furrygang.eatStuff.EatStuff
+api-version: '1.21'
+authors: [ furrygang ]
+description: lol
+commands:
+  leaderboard:
+    aliases: lb
+    description: "Show how much have people ate so far"
+    usage: "leaderboard"
