@@ -1,14 +1,16 @@
 package dev.furrygang.eatStuff;
 
+import dev.furrygang.eatStuff.Scoreboard.Scoreboard;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.configuration.file.FileConfiguration;
+
+import java.sql.SQLException;
 
 public final class EatStuff extends JavaPlugin {
 
-    private FileConfiguration config;
+    private Eat eatInstance;
+    private Scoreboard scoreboardInstance;
 
     public static EatStuff getInstance() {
         return getPlugin(EatStuff.class);
@@ -18,7 +20,15 @@ public final class EatStuff extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("EatStuff plugin has been enabled!");
-        getServer().getPluginManager().registerEvents(new Eat(), this);
+        try {
+            eatInstance = new Eat();
+            scoreboardInstance = new Scoreboard();
+            getServer().getPluginManager().registerEvents(eatInstance, this);
+            getServer().getPluginManager().registerEvents(scoreboardInstance, this);
+        } catch (SQLException e) {
+            getLogger().severe("Failed to register events: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
 
         PluginCommand command = getCommand("leaderboard");
         command.setExecutor(new LeaderBoardCMD());
@@ -27,7 +37,12 @@ public final class EatStuff extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        HandlerList.unregisterAll((Listener) new Eat());
+        if (eatInstance != null) {
+            HandlerList.unregisterAll(eatInstance);
+        }
+        if (scoreboardInstance != null) {
+            HandlerList.unregisterAll(scoreboardInstance);
+        }
         getLogger().info("EatStuff plugin has been disabled!");
     }
 }
